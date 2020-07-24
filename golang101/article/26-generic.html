@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="icon" href="../web/static/go101/images/101-v1.ico">
+		<link rel="apple-touch-icon" sizes="152x152" href="../web/static/go101/images/iphone-v1.jpeg">
+
+		<title>内置范型 - Go语言101（通俗版白皮书）</title>
+
+		<link href="../web/static/bootstrap/v3.3.7-a/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../web/static/go101/css/v9.css" rel="stylesheet">
+		<link href="../web/static/prism/2019-05-11/prism.css" rel="stylesheet">
+		<script src="../web/static/prism/2019-05-11/prism.js"></script>
+		<script src="../web/static/jquery/jquery.min-v1.11.2.js"></script>
+		
+	</head>
+
+	<body>
+		<div class="container">
+
+		<div class="row nav-bar-with-borders"><div class="col-xs-6 col-sm-3 nav-item-active"><a href="./101.html">本书目录</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./50-details.html">Go细节101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./51-unofficial-faq.html">Go问答101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./52-tips.html">Go技巧101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go实战101</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go链接101</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go101工具</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go测验101</div>
+</div><div class="alert alert-success text-center"><small>
+<b><a href="https://github.com/go101/gold">Gold</a></b> - 一款本地Go文档服务器、文档生成工具和代码阅读器。<span style="color: #090; font-weight: bold;"><sup>新！</sup></span>
+<br/>-- 展示类型实现关系 --
+<br/>-- 展示代码统计 --
+<br/>-- 良好的代码阅读体验 --
+<br/>-- 更多功能... --
+</small></div>
+<p>
+</p>
+
+
+
+<h1>内置范型</h1>
+
+
+
+<p>
+Go语言目前（Go 1.14）不支持自定义范型，只支持一等公民组合类型的内置范型。
+我们可以用各种一等公民组合类型来组合出无穷个类型。
+</p>
+
+<p>
+本文将展示一些自定义组合类型的例子并解释如何解读这些自定义类型。
+</p>
+
+<h3>一些自定义组合类型的例子</h3>
+
+<div>
+
+<p>
+Go中的组合类型字面表示设计得非常直观和易于解读。
+即使对于一些非常复杂的类型，我们也几乎不可能在解读它们的字面形式中迷失。
+下面将从简单到复杂列出一些自定义组合类型的例子并进行解读。
+</p>
+
+先看一个简单的例子：
+
+<pre class="line-numbers"><code class="language-go">[3][4]int
+</code></pre>
+
+<p>
+当解读一个类型的字面形式时，我们应该从左到右进行解读。
+左边开头的<code>[3]</code>表示着这个类型为一个数组类型，它右边的整个部分为它的元素类型。
+对于这个例子，它的元素类型为另外一个数组类型<code>[4]int</code>。
+此另外一个数组类型的元素类型为为内置类型<code>int</code>。
+第一个数组类型可以被看作是一个二维数组类型。
+</p>
+
+一个使用此数组类型的例子：
+<pre class="line-numbers"><code class="language-go">package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	matrix := [3][4]int{
+		{1, 0, 0, 1},
+		{0, 1, 0, 1},
+		{0, 0, 1, 1},
+	}
+
+	matrix[1][1] = 3
+	a := matrix[1] // 变量a的类型为[4]int
+	fmt.Println(a) // [0 3 0 1]
+}
+</code></pre>
+
+<p>
+</p>
+
+类似的，
+<ul>
+<li>
+	<code>[][]string</code>是一个元素类型为另一个切片类型<code>[]string</code>的切片类型。
+</li>
+<li>
+	<code>**bool</code>是一个基类型为另一个指针类型<code>*bool</code>的指针类型。
+</li>
+<li>
+	<code>chan chan int</code>是一个元素类型为另一个通道类型的<code>chan int</code>的通道类型。
+</li>
+<li>
+	<code>map[int]map[int]string</code>是一个元素类型为另一个映射类型<code>map[string]int</code>的映射类型。
+	这两个映射类型的键值类型均为内置类型<code>int</code>。
+</li>
+<li>
+	<code>func(int32) func(int32)</code>是一个只有一个输入参数和一个返回值的函数类型，此返回值的类型为一个只有一个输入参数的函数类型。
+	这两个函数类型的输入参数的类型均为内置类型<code>int32</code>。
+</li>
+</ul>
+
+<p>
+</p>
+
+下面是另一个自定义组合类型：
+
+<pre class="line-numbers"><code class="language-go">chan *[16]byte
+</code></pre>
+
+<p>
+最左边的<code>chan</code>关键字表明此类型是一个通道类型。
+<code>chan</code>关键字右边的整个部分<code>*[16]byte</code>表示此通道类型的元素类型，此元素类型是一个指针类型。
+此指针类型的基类型为<code>*</code>右边的整个部分：<code>[16]byte</code>，此基类型为一个数组类型。
+此数组类型的元素类型为内置类型<code>byte</code>。
+</p>
+
+一个使用此通道类型的例子：
+<pre class="line-numbers"><code class="language-go">package main
+
+import (
+	"fmt"
+	"time"
+	"crypto/rand"
+)
+
+func main() {
+	c := make(chan *[16]byte)
+
+	go func() {
+		// 使用两个数组以避免数据竞争。
+		var dataA, dataB = new([16]byte), new([16]byte)
+		for {
+			_, err := rand.Read(dataA[:])
+			if err != nil {
+				close(c)
+			} else {
+				c <- dataA
+				dataA, dataB = dataB, dataA
+			}
+		}
+	}()
+
+	for data := range c {
+		fmt.Println((*data)[:])
+		time.Sleep(time.Second / 2)
+	}
+}
+</code></pre>
+
+<p>
+</p>
+
+<p>
+类似的，类型<code>map[string][]func(int) int</code>为一个映射类型。
+此映射类型的键值类型为内置类型<code>string</code>，右边剩余的部分为此映射类型的元素类型。
+<code>[]</code>表明此映射的元素类型为一个切片类型，此切片类型的元素类型为一个函数类型<code>func(int) int</code>。
+</p>
+
+一个使用了此映射类型的例子：
+
+<pre class="line-numbers"><code class="language-go">package main
+
+import "fmt"
+
+func main() {
+	addone := func(x int) int {return x + 1}
+	square := func(x int) int {return x * x}
+	double := func(x int) int {return x + x}
+
+	transforms := map[string][]func(int) int {
+		"inc,inc,inc": {addone, addone, addone},
+		"sqr,inc,dbl": {square, addone, double},
+		"dbl,sqr,sqr": {double, double, square},
+	}
+
+	for _, n := range []int{2, 3, 5, 7} {
+		fmt.Println(">>>", n)
+		for name, transfers := range transforms {
+			result := n
+			for _, xfer := range transfers {
+				result = xfer(result)
+			}
+			fmt.Printf(" %v: %v \n", name, result)
+		}
+	}
+}
+</code></pre>
+
+<p>
+</p>
+
+下面是一个看上去有些复杂的类型：
+
+<pre class="line-numbers"><code class="language-go">[]map[struct {
+	a int
+	b struct {
+		x string
+		y bool
+	}
+}]interface {
+	Build([]byte, struct {x string; y bool}) error
+	Update(dt float64)
+	Destroy()
+}
+</code></pre>
+
+<p>
+让我们从左到右解读此类型。
+最左边开始的<code>[]</code>表明这是一个切片类型，紧跟着的<code>map</code>关键字表明此切片类型的元素为一个映射类型。
+<code>map</code>关键字后紧跟的一对方括号<code>[]</code>中的结构体类型字面形式表明此映射的键值类型为一个结构体类型。
+此中括号右边的整个部分表明此映射的元素类型为一个接口类型。此接口类型指定了三个方法。
+此映射的键值结构体类型有两个字段，第一个字段的名称和类型为<code>a</code>和内置类型<code>int</code>；
+第二个字段的名称为<code>b</code>，它的类型为另外一个结构体类型<code>struct {x string; y bool}</code>。
+此另外一个结构体类型也有两个字段：内置<code>string</code>类型的字段<code>x</code>和内置<code>bool</code>类型的字段<code>y</code>。
+</p>
+
+<p>
+请注意第二个结构体类型也被用做刚提及的接口类型所指定的其中一个方法中的其中一个参数类型。
+</p>
+
+
+我们经常将复杂类型的各个组成部分单独提前声明为一个类型名，从而获得更高的可读性。
+下面的代码中的类型别名<code>T</code>和上面刚解读的类型表示同一个类型。
+
+<pre class="line-numbers"><code class="language-go">type B = struct {
+	x string
+	y bool
+}
+
+type K = struct {
+	a int
+	b B
+}
+
+type E = interface {
+	Build([]byte, B) error
+	Update(dt float64)
+	Destroy()
+}
+
+type T = []map[K]E
+</code></pre>
+
+</div>
+
+<h3>当前Go中的内置范型现状</h3>
+
+<p>
+Go中当前的内置范型除了上述类型组合，还有一些支持范型的内置函数。
+比如，内置函数<code>len</code>可以用来获取各种容器值的长度。
+<code>unsafe</code>标准库包中的函数也可以被看作是支持范型的内置函数。
+</p>
+
+<p>
+Go目前不支持自定义范型这一事实有时候确实造成了一些不方便。
+比如，<code>math</code>标准库包中的函数的参数类型和结果类型都为内置类型<code>float64</code>。
+当调用这些函数的时候，我们必须将非<code>float64</code>类型的实参值转换为<code>float64</code>，然后还需把结果从<code>float64</code>类型转回来。
+这不仅不方便，而且代码执行效率不高。
+</p>
+
+<p>
+幸运的是，很多Go项目对自定义范型并没有很强的需求。
+并且，缺少自定义范型的不足可以通过（在运行时刻）使用反射机制和（在编译时刻）代码生成来部分地弥补。
+</p>
+
+<h3>未来的Go自定义范型</h3>
+
+<p>
+Go语言核心设计和开发团队<a href="https://research.swtch.com/go2017#generics">并不排斥在Go中加入自定义范型</a>，
+他们只是<a href="https://github.com/golang/go/issues/15292">还没找到一个可以保持Go的简洁性的自定义范型方案</a>。
+未来的Go版本中还是很可能会支持自定义范性的。
+目前已经有了<a href="https://go.googlesource.com/proposal/+/master/design/go2draft-contracts.md">一个Go自定义范型草案</a>。
+此草案仍旧处于早期朦胧阶段，最终的设计可能会和此草案差别很大。
+</p>
+
+
+
+
+
+
+<div class="alert alert-success text-center" style="margin-bottom: 0px;">
+
+<p>
+Go语言101项目目前托管在<a href="https://github.com/golang101/golang101">Github</a>上。欢迎各位在此项目中通过提交bug和PR的方式来改进完善Go语言101中的各篇文章。
+</p>
+
+<p>
+本书微信公众号名称为"Go 101"。此公众号将时不时地发表一些Go语言相关的原创短文。各位如果感兴趣，可以搜索关注一下。
+</p>
+
+</div><div class="text-center">
+	<img src="../res/101-reward-qrcode-5.png" alt="赞赏" style="max-width: 100%; height: auto; width: auto\9;"></img>
+</div><div class="row nav-bar-with-borders"><div class="col-xs-6 col-sm-3 nav-item-active"><a href="./101.html">本书目录</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./50-details.html">Go细节101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./51-unofficial-faq.html">Go问答101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./52-tips.html">Go技巧101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go实战101</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go链接101</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go101工具</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go测验101</div>
+</div>
+
+
+</div>
+	</body>
+</html>
+
+
+

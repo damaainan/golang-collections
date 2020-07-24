@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="icon" href="../web/static/go101/images/101-v1.ico">
+		<link rel="apple-touch-icon" sizes="152x152" href="../web/static/go101/images/iphone-v1.jpeg">
+
+		<title>并发同步概述 - Go语言101（通俗版白皮书）</title>
+
+		<link href="../web/static/bootstrap/v3.3.7-a/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../web/static/go101/css/v9.css" rel="stylesheet">
+		<link href="../web/static/prism/2019-05-11/prism.css" rel="stylesheet">
+		<script src="../web/static/prism/2019-05-11/prism.js"></script>
+		<script src="../web/static/jquery/jquery.min-v1.11.2.js"></script>
+		
+	</head>
+
+	<body>
+		<div class="container">
+
+		<div class="row nav-bar-with-borders"><div class="col-xs-6 col-sm-3 nav-item-active"><a href="./101.html">本书目录</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./50-details.html">Go细节101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./51-unofficial-faq.html">Go问答101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./52-tips.html">Go技巧101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go实战101</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go链接101</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go101工具</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go测验101</div>
+</div><div class="alert alert-success text-center"><small>
+<b><a href="https://github.com/go101/gold">Gold</a></b> - 一款本地Go文档服务器、文档生成工具和代码阅读器。<span style="color: #090; font-weight: bold;"><sup>新！</sup></span>
+<br/>-- 展示类型实现关系 --
+<br/>-- 展示代码统计 --
+<br/>-- 良好的代码阅读体验 --
+<br/>-- 更多功能... --
+</small></div>
+<p>
+</p>
+
+
+
+<h1>并发同步概述</h1>
+
+
+
+<p>
+本文将解释什么是并发同步，并列出Go支持的几种并发同步技术。
+</p>
+
+<h3>什么是并发同步？</h3>
+
+<div>
+
+并发同步是指如何控制若干并发计算（在Go中，即协程），从而
+<ul>
+<li>
+	避免在它们之间产生数据竞争的现象；
+</li>
+<li>
+	避免在它们无所事事的时候消耗CPU资源。
+</li>
+</ul>
+
+并发同步有时候也称为数据同步。
+
+<!--
+<p>
+Often, at run time, in a concurrent program,
+a value will be accessed by multiple goroutines.
+For such circumstances, we must control which goroutines
+can acquire the ownership of the value at a given time.
+Otherwise, data races may happen and the integrity of the value will not get guaranteed.
+</p>
+
+<p>
+We use all kinds of data synchronization techniques to transfer or guard
+value ownerships between goroutines to avoid data races in current programs.
+</p>
+
+Here, more specifically, about the ownership of a value,
+<ul>
+<li>
+	the write ownership of a value is exclusive.
+	In the period of a goroutine owns the write right of a value,
+	no other goroutines should access the value, either read or write.
+</li>
+<li>
+	the read ownership of a value is non-exclusive.
+	In the period of a goroutine owns the read right of a value,
+	other goroutines can also safely read the value,
+	but no goroutines should write the value.
+</li>
+</ul>
+
+<p>
+is called concurrency synchronization.
+</p>
+
+<p><i>
+(In fact, more precisely, to avoid data races,
+what we care about is the ownerships of some memmory segments.
+At run time, a value may occupy multiple memmory segments.
+We might not care about the ownerships of all the memmory segments
+occupied by a value in writing a piece of concurrent code.
+But, for explanation simplicity, we will still use
+the "ownerships of values" wording in descriptions throughout 《Go语言101》 articles.)
+</i></p>
+-->
+
+</div>
+
+<h3>Go支持哪些并发同步技术？</h3>
+
+<div>
+<a href="channel.html">通道</a>一文已经解释了如何使用通道来做并发同步。
+除了使用通道，Go还支持几种通用并发同步技术，比如互斥锁和原子操作。
+请阅读下面的文章来了解各种并发同步技术的使用。
+<ul>
+<li><a href="channel-use-cases.html">通道用例大全</a></li>
+<li><a href="channel-closing.html">如何优雅地关闭通道</a></li>
+<li><a href="concurrent-synchronization-more.html"><code>sync</code>标准库包中提供的并发同步技术</a></li>
+<li><a href="concurrent-atomic-operation.html"><code>sync/atomic</code>标准库包中提供的原子操作技术</a></li>
+</ul>
+</div>
+
+<p>
+我们也可以利用网络和文件读写来做并发同步，但是这样的并发同步方法使用在一个程序进程内部时效率相对比较低。
+一般来说，这样的方法多适用于多个进程之间或多个主机之间的并发同步。《Go语言101》中不介绍这样的并发同步方法。
+</p>
+
+<p>
+为了更好地理解各种并发同步技术，推荐在适当的时候（具有一定的Go并发编程经验时）阅读<a href="memory-model.html">Go中的内存顺序保证</a>一文。
+</p>
+
+<p>
+Go中提供的各种并发同步技术并不能阻止Go程序员写出<a href="concurrent-common-mistakes.html">不正确的并发代码</a>。
+但是，这些技术使得Go程序员可以轻松写出正确的并发代码。特别地，Go中提供的独特的通道技术使得并发编程变得很轻松和惬意。
+</p>
+
+
+
+
+
+<div class="alert alert-success text-center" style="margin-bottom: 0px;">
+
+<p>
+Go语言101项目目前托管在<a href="https://github.com/golang101/golang101">Github</a>上。欢迎各位在此项目中通过提交bug和PR的方式来改进完善Go语言101中的各篇文章。
+</p>
+
+<p>
+本书微信公众号名称为"Go 101"。此公众号将时不时地发表一些Go语言相关的原创短文。各位如果感兴趣，可以搜索关注一下。
+</p>
+
+</div><div class="text-center">
+	<img src="../res/101-reward-qrcode-5.png" alt="赞赏" style="max-width: 100%; height: auto; width: auto\9;"></img>
+</div><div class="row nav-bar-with-borders"><div class="col-xs-6 col-sm-3 nav-item-active"><a href="./101.html">本书目录</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./50-details.html">Go细节101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./51-unofficial-faq.html">Go问答101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive"><a href="./52-tips.html">Go技巧101</a></div><div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go实战101</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go链接101</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go101工具</div>
+
+	<div class="col-xs-6 col-sm-3 nav-item-inactive" style="color: #ccc;">Go测验101</div>
+</div>
+
+
+</div>
+	</body>
+</html>
+
+
+
