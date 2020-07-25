@@ -622,7 +622,7 @@ func main() {
 上面展示的切片的内部定义为切片的直接部分的定义。直接部分的<code>len</code>字段表示一个切片当前存储了多少个元素；直接部分的<code>cap</code>表示一个切片的容量。
 下面这张图描绘了一个切片值的内存布局。
 <div class="text-center">
-<img src="res/slice-internal.png" alt="切片值内存布局"></img>
+<img src="../res/slice-internal.png" alt="切片值内存布局"></img>
 </div>
 </p>
 
@@ -863,7 +863,7 @@ func main() {
 所以，上面的程序中在退出之前，切片<code>s1</code>和<code>s2</code>共享一些元素，切片<code>s0</code>和<code>s3</code>共享所有的元素。
 下面这张图描绘了在上面的程序结束之前各个切片的状态。
 <div class="text-center">
-<img src="res/slice-append.png" alt="各个切片状态"></img>
+<img src="../res/slice-append.png" alt="各个切片状态"></img>
 </div>
 </p>
 
@@ -1235,7 +1235,7 @@ func main() {
 
 下面这张图描绘了上面的程序在退出之前各个数组和切片的状态。
 <div class="text-center">
-<img src="res/slice-subslice-2.png" alt="数字和切片状态"></img>
+<img src="../res/slice-subslice-2.png" alt="数字和切片状态"></img>
 </div>
 
 <p>
