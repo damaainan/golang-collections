@@ -2,7 +2,7 @@
 
 unsafe.Sizeof函数返回操作数在内存中的字节大小，参数可以是任意类型的表达式，但是它并不会对表达式进行求值。一个Sizeof函数调用是一个对应uintptr类型的常量表达式，因此返回的结果可以用作数组类型的长度大小，或者用作计算其他的常量。
 
-```Go
+```golang
 import "unsafe"
 fmt.Println(unsafe.Sizeof(float64(0))) // "8"
 ```
@@ -29,7 +29,7 @@ Sizeof函数返回的大小只包括数据结构中固定的部分，例如字�
 
 Go语言的规范并没有要求一个字段的声明顺序和内存中的顺序是一致的，所以理论上一个编译器可以随意地重新排列每个字段的内存位置，虽然在写作本书的时候编译器还没有这么做。下面的三个结构体虽然有着相同的字段，但是第一种写法比另外的两个需要多50%的内存。
 
-```Go
+```golang
                                // 64-bit  32-bit
 struct{ bool; float64; int16 } // 3 words 4words
 struct{ float64; int16; bool } // 2 words 3words
@@ -44,7 +44,7 @@ struct{ bool; int16; float64 } // 2 words 3words
 
 图 13.1 显示了一个结构体变量 x 以及其在32位和64位机器上的典型的内存。灰色区域是空洞。
 
-```Go
+```golang
 var x struct {
 	a bool
 	b int16

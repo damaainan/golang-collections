@@ -4,7 +4,7 @@
 
 使用内置的make函数，我们可以创建一个channel：
 
-```Go
+```golang
 ch := make(chan int) // ch has type 'chan int'
 ```
 
@@ -14,7 +14,7 @@ ch := make(chan int) // ch has type 'chan int'
 
 一个channel有发送和接受两个主要操作，都是通信行为。一个发送语句将一个值从一个goroutine通过channel发送到另一个执行接收操作的goroutine。发送和接收两个操作都使用`<-`运算符。在发送语句中，`<-`运算符分割channel和要发送的值。在接收语句中，`<-`运算符写在channel对象之前。一个不使用接收结果的接收操作也是合法的。
 
-```Go
+```golang
 ch <- x  // a send statement
 x = <-ch // a receive expression in an assignment statement
 <-ch     // a receive statement; result is discarded
@@ -24,13 +24,13 @@ Channel还支持close操作，用于关闭channel，随后对基于该channel的
 
 使用内置的close函数就可以关闭一个channel：
 
-```Go
+```golang
 close(ch)
 ```
 
 以最简单方式调用make函数创建的是一个无缓存的channel，但是我们也可以指定第二个整型参数，对应channel的容量。如果channel的容量大于零，那么该channel就是带缓存的channel。
 
-```Go
+```golang
 ch = make(chan int)    // unbuffered channel
 ch = make(chan int, 0) // unbuffered channel
 ch = make(chan int, 3) // buffered channel with capacity 3

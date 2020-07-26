@@ -2,7 +2,7 @@
 
 内置的append函数用于向slice追加元素：
 
-```Go
+```golang
 var runes []rune
 for _, r := range "Hello, 世界" {
 	runes = append(runes, r)
@@ -15,7 +15,8 @@ fmt.Printf("%q\n", runes) // "['H' 'e' 'l' 'l' 'o' ',' ' ' '世' '界']"
 append函数对于理解slice底层是如何工作的非常重要，所以让我们仔细查看究竟是发生了什么。下面是第一个版本的appendInt函数，专门用于处理[]int类型的slice：
 
 <u><i>gopl.io/ch4/append</i></u>
-```Go
+
+```golang
 func appendInt(x []int, y int) []int {
 	var z []int
 	zlen := len(x) + 1
@@ -45,7 +46,7 @@ func appendInt(x []int, y int) []int {
 
 为了提高内存使用效率，新分配的数组一般略大于保存x和y所需要的最低大小。通过在每次扩展数组时直接将长度翻倍从而避免了多次内存分配，也确保了添加单个元素操的平均时间是一个常数时间。这个程序演示了效果：
 
-```Go
+```golang
 func main() {
 	var x, y []int
 	for i := 0; i < 10; i++ {
@@ -81,13 +82,13 @@ func main() {
 
 内置的append函数可能使用比appendInt更复杂的内存扩展策略。因此，通常我们并不知道append调用是否导致了内存的重新分配，因此我们也不能确认新的slice和原始的slice是否引用的是相同的底层数组空间。同样，我们不能确认在原先的slice上的操作是否会影响到新的slice。因此，通常是将append返回的结果直接赋值给输入的slice变量：
 
-```Go
+```golang
 runes = append(runes, r)
 ```
 
 更新slice变量不仅对调用append函数是必要的，实际上对应任何可能导致长度、容量或底层数组变化的操作都是必要的。要正确地使用slice，需要记住尽管底层数组的元素是间接访问的，但是slice对应结构体本身的指针、长度和容量部分是直接访问的。要更新这些信息需要像上面例子那样一个显式的赋值操作。从这个角度看，slice并不是一个纯粹的引用类型，它实际上是一个类似下面结构体的聚合类型：
 
-```Go
+```golang
 type IntSlice struct {
 	ptr      *int
 	len, cap int
@@ -96,7 +97,7 @@ type IntSlice struct {
 
 我们的appendInt函数每次只能向slice追加一个元素，但是内置的append函数则可以追加多个元素，甚至追加一个slice。
 
-```Go
+```golang
 var x []int
 x = append(x, 1)
 x = append(x, 2, 3)
@@ -107,7 +108,7 @@ fmt.Println(x)      // "[1 2 3 4 5 6 1 2 3 4 5 6]"
 
 通过下面的小修改，我们可以达到append函数类似的功能。其中在appendInt函数参数中的最后的“...”省略号表示接收变长的参数为slice。我们将在5.7节详细解释这个特性。
 
-```Go
+```golang
 func appendInt(x []int, y ...int) []int {
 	var z []int
 	zlen := len(x) + len(y)

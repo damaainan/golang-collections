@@ -23,7 +23,8 @@ object          {"year": 1980,
 考虑一个应用程序，该程序负责收集各种电影评论并提供反馈功能。它的Movie数据类型和一个典型的表示电影的值列表如下所示。（在结构体声明中，Year和Color成员后面的字符串面值是结构体成员Tag；我们稍后会解释它的作用。）
 
 <u><i>gopl.io/ch4/movie</i></u>
-```Go
+
+```golang
 type Movie struct {
 	Title  string
 	Year   int  `json:"released"`
@@ -44,7 +45,7 @@ var movies = []Movie{
 
 这样的数据结构特别适合JSON格式，并且在两者之间相互转换也很容易。将一个Go语言中类似movies的结构体slice转为JSON的过程叫编组（marshaling）。编组通过调用json.Marshal函数完成：
 
-```Go
+```golang
 data, err := json.Marshal(movies)
 if err != nil {
 	log.Fatalf("JSON marshaling failed: %s", err)
@@ -63,7 +64,7 @@ Actors":["Steve McQueen","Jacqueline Bisset"]}]
 
 这种紧凑的表示形式虽然包含了全部的信息，但是很难阅读。为了生成便于阅读的格式，另一个json.MarshalIndent函数将产生整齐缩进的输出。该函数有两个额外的字符串参数用于表示每一行输出的前缀和每一个层级的缩进：
 
-```Go
+```golang
 data, err := json.MarshalIndent(movies, "", "    ")
 if err != nil {
 	log.Fatalf("JSON marshaling failed: %s", err)
@@ -116,7 +117,7 @@ Color bool `json:"color,omitempty"`
 
 编码的逆操作是解码，对应将JSON数据解码为Go语言的数据结构，Go语言中一般叫unmarshaling，通过json.Unmarshal函数完成。下面的代码将JSON格式的电影数据解码为一个结构体slice，结构体中只有Title成员。通过定义合适的Go语言数据结构，我们可以选择性地解码JSON中感兴趣的成员。当Unmarshal函数调用返回，slice将被只含有Title信息的值填充，其它JSON成员将被忽略。
 
-```Go
+```golang
 var titles []struct{ Title string }
 if err := json.Unmarshal(data, &titles); err != nil {
 	log.Fatalf("JSON unmarshaling failed: %s", err)
@@ -127,7 +128,8 @@ fmt.Println(titles) // "[{Casablanca} {Cool Hand Luke} {Bullitt}]"
 许多web服务都提供JSON接口，通过HTTP接口发送JSON格式请求并返回JSON格式的信息。为了说明这一点，我们通过Github的issue查询服务来演示类似的用法。首先，我们要定义合适的类型和常量：
 
 <u><i>gopl.io/ch4/github</i></u>
-```Go
+
+```golang
 // Package github provides a Go API for the GitHub issue tracker.
 // See https://developer.github.com/v3/search/#search-issues.
 package github
@@ -162,7 +164,8 @@ type User struct {
 SearchIssues函数发出一个HTTP请求，然后解码返回的JSON格式的结果。因为用户提供的查询条件可能包含类似`?`和`&`之类的特殊字符，为了避免对URL造成冲突，我们用url.QueryEscape来对查询中的特殊字符进行转义操作。
 
 <u><i>gopl.io/ch4/github</i></u>
-```Go
+
+```golang
 package github
 
 import (
@@ -203,7 +206,8 @@ func SearchIssues(terms []string) (*IssuesSearchResult, error) {
 我们调用Decode方法来填充变量。这里有多种方法可以格式化结构。下面是最简单的一种，以一个固定宽度打印每个issue，但是在下一节我们将看到如何利用模板来输出复杂的格式。
 
 <u><i>gopl.io/ch4/issues</i></u>
-```Go
+
+```golang
 // Issues prints a table of GitHub issues matching the search terms.
 package main
 

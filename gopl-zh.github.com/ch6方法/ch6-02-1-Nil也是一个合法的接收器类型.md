@@ -23,7 +23,8 @@ func (list *IntList) Sum() int {
 下面是net/url包里Values类型定义的一部分。
 
 <u><i>net/url</i></u>
-```go
+
+```golang
 package url
 
 // Values maps a string key to a list of values.
@@ -46,7 +47,8 @@ func (v Values) Add(key, value string) {
 这个定义向外部暴露了一个map的命名类型，并且提供了一些能够简单操作这个map的方法。这个map的value字段是一个string的slice，所以这个Values是一个多维map。客户端使用这个变量的时候可以使用map固有的一些操作（make，切片，m[key]等等），也可以使用这里提供的操作方法，或者两者并用，都是可以的：
 
 <u><i>gopl.io/ch6/urlvalues</i></u>
-```go
+
+```golang
 m := url.Values{"lang": {"en"}} // direct construction
 m.Add("item", "1")
 m.Add("item", "2")

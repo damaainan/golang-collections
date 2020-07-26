@@ -3,7 +3,8 @@
 在5.6节中，我们做了一个简单的web爬虫，用bfs(广度优先)算法来抓取整个网站。在本节中，我们会让这个爬虫并行化，这样每一个彼此独立的抓取命令可以并行进行IO，最大化利用网络资源。crawl函数和gopl.io/ch5/findlinks3中的是一样的。
 
 <u><i>gopl.io/ch8/crawl1</i></u>
-```go
+
+```golang
 func crawl(url string) []string {
 	fmt.Println(url)
 	list, err := links.Extract(url)
@@ -65,7 +66,8 @@ https://golang.org/blog/
 让我们重写crawl函数，将对links.Extract的调用操作用获取、释放token的操作包裹起来，来确保同一时间对其只有20个调用。信号量数量和其能操作的IO资源数量应保持接近。
 
 <u><i>gopl.io/ch8/crawl2</i></u>
-```go
+
+```golang
 // tokens is a counting semaphore used to
 // enforce a limit of 20 concurrent requests.
 var tokens = make(chan struct{}, 20)

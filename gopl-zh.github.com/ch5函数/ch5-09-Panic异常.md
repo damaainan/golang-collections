@@ -6,7 +6,7 @@ Go的类型系统会在编译时捕获很多错误，但有些错误只能在运
 
 不是所有的panic异常都来自运行时，直接调用内置的panic函数也会引发panic异常；panic函数接受任何值作为参数。当某些不应该发生的场景发生时，我们就应该调用panic。比如，当程序到达了某条逻辑上不可能到达的路径：
 
-```Go
+```golang
 switch s := suit(drawCard()); s {
 case "Spades":                                // ...
 case "Hearts":                                // ...
@@ -19,7 +19,7 @@ default:
 
 断言函数必须满足的前置条件是明智的做法，但这很容易被滥用。除非你能提供更多的错误信息，或者能更快速的发现错误，否则不需要使用断言，编译器在运行时会帮你检查代码。
 
-```Go
+```golang
 func Reset(x *Buffer) {
 	if x == nil {
 		panic("x is nil") // unnecessary!
@@ -34,7 +34,7 @@ func Reset(x *Buffer) {
 
 在程序源码中，大多数正则表达式是字符串字面值（string literals），因此regexp包提供了包装函数regexp.MustCompile检查输入的合法性。
 
-```Go
+```golang
 package regexp
 func Compile(expr string) (*Regexp, error) { /* ... */ }
 func MustCompile(expr string) *Regexp {
@@ -48,13 +48,13 @@ func MustCompile(expr string) *Regexp {
 
 包装函数使得调用者可以便捷的用一个编译后的正则表达式为包级别的变量赋值：
 
-```Go
+```golang
 var httpSchemeRE = regexp.MustCompile(`^https?:`) //"http:" or "https:"
 ```
 
 显然，MustCompile不能接收不合法的输入。函数名中的Must前缀是一种针对此类函数的命名约定，比如template.Must（4.6节）
 
-```Go
+```golang
 func main() {
 	f(3)
 }
@@ -98,7 +98,7 @@ src/gopl.io/ch5/defer1/defer.go:10
 
 <u><i>gopl.io/ch5/defer2</i></u>
 
-```Go
+```golang
 func main() {
 	defer printStack()
 	f(3)

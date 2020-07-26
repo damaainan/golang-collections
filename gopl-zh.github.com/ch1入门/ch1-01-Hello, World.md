@@ -3,7 +3,8 @@
 我们以现已成为传统的“hello world”案例来开始吧，这个例子首次出现于1978年出版的C语言圣经[《The C Programming Language》](http://s3-us-west-2.amazonaws.com/belllabs-microsite-dritchie/cbook/index.html)（译注：本书作者之一Brian W. Kernighan也是《The C Programming Language》一书的作者）。C语言是直接影响Go语言设计的语言之一。这个例子体现了Go语言一些核心理念。
 
 <u><i>gopl.io/ch1/helloworld</i></u>
-```go
+
+```golang
 package main
 
 import "fmt"

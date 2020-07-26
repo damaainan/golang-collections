@@ -5,7 +5,8 @@
 为了最简单地展示基于HTTP获取信息的方式，下面给出一个示例程序fetch，这个程序将获取对应的url，并将其源文本打印出来；这个例子的灵感来源于curl工具（译注：unix下的一个用来发http请求的工具，具体可以man curl）。当然，curl提供的功能更为复杂丰富，这里只编写最简单的样例。这个样例之后还会多次被用到。
 
 <u><i>gopl.io/ch1/fetch</i></u>
-```go
+
+```golang
 // Fetch prints the content found at a URL.
 package main
 

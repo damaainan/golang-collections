@@ -5,7 +5,8 @@
 我们的第一个例子是一个顺序执行的时钟服务器，它会每隔一秒钟将当前时间写到客户端：
 
 <u><i>gopl.io/ch8/clock1</i></u>
-```go
+
+```golang
 // Clock1 is a TCP server that periodically writes the time.
 package main
 
@@ -67,7 +68,8 @@ $ nc localhost 8000
 客户端将服务器发来的时间显示了出来，我们用Control+C来中断客户端的执行，在Unix系统上，你会看到^C这样的响应。如果你的系统没有装nc这个工具，你可以用telnet来实现同样的效果，或者也可以用我们下面的这个用go写的简单的telnet程序，用net.Dial就可以简单地创建一个TCP连接：
 
 <u><i>gopl.io/ch8/netcat1</i></u>
-```go
+
+```golang
 // Netcat1 is a read-only TCP client.
 package main
 
@@ -115,7 +117,8 @@ killall命令是一个Unix命令行工具，可以用给定的进程名来杀掉
 第二个客户端必须等待第一个客户端完成工作，这样服务端才能继续向后执行；因为我们这里的服务器程序同一时间只能处理一个客户端连接。我们这里对服务端程序做一点小改动，使其支持并发：在handleConn函数调用的地方增加go关键字，让每一次handleConn的调用都进入一个独立的goroutine。
 
 <u><i>gopl.io/ch8/clock2</i></u>
-```go
+
+```golang
 for {
 	conn, err := listener.Accept()
 	if err != nil {

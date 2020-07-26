@@ -6,13 +6,13 @@
 
 内置的make函数可以创建一个map：
 
-```Go
+```golang
 ages := make(map[string]int) // mapping from strings to ints
 ```
 
 我们也可以用map字面值的语法创建map，同时还可以指定一些最初的key/value：
 
-```Go
+```golang
 ages := map[string]int{
 	"alice":   31,
 	"charlie": 34,
@@ -21,7 +21,7 @@ ages := map[string]int{
 
 这相当于
 
-```Go
+```golang
 ages := make(map[string]int)
 ages["alice"] = 31
 ages["charlie"] = 34
@@ -31,38 +31,38 @@ ages["charlie"] = 34
 
 Map中的元素通过key对应的下标语法访问：
 
-```Go
+```golang
 ages["alice"] = 32
 fmt.Println(ages["alice"]) // "32"
 ```
 
 使用内置的delete函数可以删除元素：
 
-```Go
+```golang
 delete(ages, "alice") // remove element ages["alice"]
 ```
 
 所有这些操作是安全的，即使这些元素不在map中也没有关系；如果一个查找失败将返回value类型对应的零值，例如，即使map中不存在“bob”下面的代码也可以正常工作，因为ages["bob"]失败时将返回0。
 
-```Go
+```golang
 ages["bob"] = ages["bob"] + 1 // happy birthday!
 ```
 
 而且`x += y`和`x++`等简短赋值语法也可以用在map上，所以上面的代码可以改写成
 
-```Go
+```golang
 ages["bob"] += 1
 ```
 
 更简单的写法
 
-```Go
+```golang
 ages["bob"]++
 ```
 
 但是map中的元素并不是一个变量，因此我们不能对map的元素进行取址操作：
 
-```Go
+```golang
 _ = &ages["bob"] // compile error: cannot take address of map element
 ```
 
@@ -70,7 +70,7 @@ _ = &ages["bob"] // compile error: cannot take address of map element
 
 要想遍历map中全部的key/value对的话，可以使用range风格的for循环实现，和之前的slice遍历语法类似。下面的迭代语句将在每次迭代时设置name和age变量，它们对应下一个键/值对：
 
-```Go
+```golang
 for name, age := range ages {
 	fmt.Printf("%s\t%d\n", name, age)
 }
@@ -78,7 +78,7 @@ for name, age := range ages {
 
 Map的迭代顺序是不确定的，并且不同的哈希函数实现可能导致不同的遍历顺序。在实践中，遍历的顺序是随机的，每一次遍历的顺序都不相同。这是故意的，每次都使用随机的遍历顺序可以强制要求程序不会依赖具体的哈希函数实现。如果要按顺序遍历key/value对，我们必须显式地对key进行排序，可以使用sort包的Strings函数对字符串slice进行排序。下面是常见的处理方式：
 
-```Go
+```golang
 import "sort"
 
 var names []string
@@ -93,7 +93,7 @@ for _, name := range names {
 
 因为我们一开始就知道names的最终大小，因此给slice分配一个合适的大小将会更有效。下面的代码创建了一个空的slice，但是slice的容量刚好可以放下map中全部的key：
 
-```Go
+```golang
 names := make([]string, 0, len(ages))
 ```
 
@@ -101,7 +101,7 @@ names := make([]string, 0, len(ages))
 
 map类型的零值是nil，也就是没有引用任何哈希表。
 
-```Go
+```golang
 var ages map[string]int
 fmt.Println(ages == nil)    // "true"
 fmt.Println(len(ages) == 0) // "true"
@@ -109,7 +109,7 @@ fmt.Println(len(ages) == 0) // "true"
 
 map上的大部分操作，包括查找、删除、len和range循环都可以安全工作在nil值的map上，它们的行为和一个空的map类似。但是向一个nil值的map存入元素将导致一个panic异常：
 
-```Go
+```golang
 ages["carol"] = 21 // panic: assignment to entry in nil map
 ```
 
@@ -117,14 +117,14 @@ ages["carol"] = 21 // panic: assignment to entry in nil map
 
 通过key作为索引下标来访问map将产生一个value。如果key在map中是存在的，那么将得到与key对应的value；如果key不存在，那么将得到value对应类型的零值，正如我们前面看到的ages["bob"]那样。这个规则很实用，但是有时候可能需要知道对应的元素是否真的是在map之中。例如，如果元素类型是一个数字，你可能需要区分一个已经存在的0，和不存在而返回零值的0，可以像下面这样测试：
 
-```Go
+```golang
 age, ok := ages["bob"]
 if !ok { /* "bob" is not a key in this map; age == 0. */ }
 ```
 
 你会经常看到将这两个结合起来使用，像这样：
 
-```Go
+```golang
 if age, ok := ages["bob"]; !ok { /* ... */ }
 ```
 
@@ -132,7 +132,7 @@ if age, ok := ages["bob"]; !ok { /* ... */ }
 
 和slice一样，map之间也不能进行相等比较；唯一的例外是和nil进行比较。要判断两个map是否包含相同的key和value，我们必须通过一个循环实现：
 
-```Go
+```golang
 func equal(x, y map[string]int) bool {
 	if len(x) != len(y) {
 		return false
@@ -148,7 +148,7 @@ func equal(x, y map[string]int) bool {
 
 从例子中可以看到如何用!ok来区分元素不存在，与元素存在但为0的。我们不能简单地用xv != y[k]判断，那样会导致在判断下面两个map时产生错误的结果：
 
-```Go
+```golang
 // True if equal is written incorrectly.
 equal(map[string]int{"A": 0}, map[string]int{"B": 42})
 ```
@@ -156,7 +156,8 @@ equal(map[string]int{"A": 0}, map[string]int{"B": 42})
 Go语言中并没有提供一个set类型，但是map中的key也是不相同的，可以用map实现类似set的功能。为了说明这一点，下面的dedup程序读取多行输入，但是只打印第一次出现的行。（它是1.3节中出现的dup程序的变体。）dedup程序通过map来表示所有的输入行所对应的set集合，以确保已经在集合存在的行不会被重复打印。
 
 <u><i>gopl.io/ch4/dedup</i></u>
-```Go
+
+```golang
 func main() {
 	seen := make(map[string]bool) // a set of strings
 	input := bufio.NewScanner(os.Stdin)
@@ -181,7 +182,7 @@ Go程序员将这种忽略value的map当作一个字符串集合，并非所有`
 
 下面的例子演示了如何使用map来记录提交相同的字符串列表的次数。它使用了fmt.Sprintf函数将字符串列表转换为一个字符串以用于map的key，通过%q参数忠实地记录每个字符串元素的信息：
 
-```Go
+```golang
 var m = make(map[string]int)
 
 func k(list []string) string { return fmt.Sprintf("%q", list) }
@@ -195,7 +196,8 @@ func Count(list []string) int { return m[k(list)] }
 这是map的另一个例子，下面的程序用于统计输入中每个Unicode码点出现的次数。虽然Unicode全部码点的数量巨大，但是出现在特定文档中的字符种类并没有多少，使用map可以用比较自然的方式来跟踪那些出现过的字符的次数。
 
 <u><i>gopl.io/ch4/charcount</i></u>
-```Go
+
+```golang
 // Charcount computes counts of Unicode characters.
 package main
 
@@ -267,7 +269,8 @@ len count
 Map的value类型也可以是一个聚合类型，比如是一个map或slice。在下面的代码中，图graph的key类型是一个字符串，value类型map[string]bool代表一个字符串集合。从概念上讲，graph将一个字符串类型的key映射到一组相关的字符串集合，它们指向新的graph的key。
 
 <u><i>gopl.io/ch4/graph</i></u>
-```Go
+
+```golang
 var graph = make(map[string]map[string]bool)
 
 func addEdge(from, to string) {

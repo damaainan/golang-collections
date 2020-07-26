@@ -3,7 +3,8 @@
 让我们看看更多的例子，比如旋转slice、反转slice或在slice原有内存空间修改元素。给定一个字符串列表，下面的nonempty函数将在原有slice内存空间之上返回不包含空字符串的列表：
 
 <u><i>gopl.io/ch4/nonempty</i></u>
-```Go
+
+```golang
 // Nonempty is an example of an in-place slice algorithm.
 package main
 
@@ -25,7 +26,7 @@ func nonempty(strings []string) []string {
 
 比较微妙的地方是，输入的slice和输出的slice共享一个底层数组。这可以避免分配另一个数组，不过原来的数据将可能会被覆盖，正如下面两个打印语句看到的那样：
 
-```Go
+```golang
 data := []string{"one", "", "three"}
 fmt.Printf("%q\n", nonempty(data)) // `["one" "three"]`
 fmt.Printf("%q\n", data)           // `["one" "three" "three"]`
@@ -35,7 +36,7 @@ fmt.Printf("%q\n", data)           // `["one" "three" "three"]`
 
 nonempty函数也可以使用append函数实现：
 
-```Go
+```golang
 func nonempty2(strings []string) []string {
 	out := strings[:0] // zero-length slice of original
 	for _, s := range strings {
@@ -51,25 +52,25 @@ func nonempty2(strings []string) []string {
 
 一个slice可以用来模拟一个stack。最初给定的空slice对应一个空的stack，然后可以使用append函数将新的值压入stack：
 
-```Go
+```golang
 stack = append(stack, v) // push v
 ```
 
 stack的顶部位置对应slice的最后一个元素：
 
-```Go
+```golang
 top := stack[len(stack)-1] // top of stack
 ```
 
 通过收缩stack可以弹出栈顶的元素
 
-```Go
+```golang
 stack = stack[:len(stack)-1] // pop
 ```
 
 要删除slice中间的某个元素并保存原有的元素顺序，可以通过内置的copy函数将后面的子slice向前依次移动一位完成：
 
-```Go
+```golang
 func remove(slice []int, i int) []int {
 	copy(slice[i:], slice[i+1:])
 	return slice[:len(slice)-1]
@@ -83,7 +84,7 @@ func main() {
 
 如果删除元素后不用保持原来顺序的话，我们可以简单的用最后一个元素覆盖被删除的元素：
 
-```Go
+```golang
 func remove(slice []int, i int) []int {
 	slice[i] = slice[len(slice)-1]
 	return slice[:len(slice)-1]

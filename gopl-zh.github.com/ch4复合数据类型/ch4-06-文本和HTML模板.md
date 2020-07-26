@@ -7,7 +7,8 @@
 {% raw %}
 
 <u><i>gopl.io/ch4/issuesreport</i></u>
-```Go
+
+```golang
 const templ = `{{.TotalCount}} issues:
 {{range .Items}}----------------------------------------
 Number: {{.Number}}
@@ -27,7 +28,7 @@ Age:    {{.CreatedAt | daysAgo}} days
 
 在一个action中，`|`操作符表示将前一个表达式的结果作为后一个函数的输入，类似于UNIX中管道的概念。在Title这一行的action中，第二个操作是一个printf函数，是一个基于fmt.Sprintf实现的内置函数，所有模板都可以直接使用。对于Age部分，第二个动作是一个叫daysAgo的函数，通过time.Since函数将CreatedAt成员转换为过去的时间长度：
 
-```Go
+```golang
 func daysAgo(t time.Time) int {
 	return int(time.Since(t).Hours() / 24)
 }
@@ -37,7 +38,7 @@ func daysAgo(t time.Time) int {
 
 生成模板的输出需要两个处理步骤。第一步是要分析模板并转为内部表示，然后基于指定的输入执行模板。分析模板部分一般只需要执行一次。下面的代码创建并分析上面定义的模板templ。注意方法调用链的顺序：template.New先创建并返回一个模板；Funcs方法将daysAgo等自定义函数注册到模板中，并返回模板；最后调用Parse函数分析模板。
 
-```Go
+```golang
 report, err := template.New("report").
 	Funcs(template.FuncMap{"daysAgo": daysAgo}).
 	Parse(templ)
@@ -50,7 +51,7 @@ if err != nil {
 
 一旦模板已经创建、注册了daysAgo函数、并通过分析和检测，我们就可以使用github.IssuesSearchResult作为输入源、os.Stdout作为输出源来执行模板：
 
-```Go
+```golang
 var report = template.Must(template.New("issuelist").
 	Funcs(template.FuncMap{"daysAgo": daysAgo}).
 	Parse(templ))
@@ -93,7 +94,8 @@ Age:       695 days
 {% raw %}
 
 <u><i>gopl.io/ch4/issueshtml</i></u>
-```Go
+
+```golang
 import "html/template"
 
 var issueList = template.Must(template.New("issuelist").Parse(`
@@ -145,7 +147,8 @@ $ ./issueshtml repo:golang/go 3133 10535 >issues2.html
 {% raw %}
 
 <u><i>gopl.io/ch4/autoescape</i></u>
-```Go
+
+```golang
 func main() {
 	const templ = `<p>A: {{.A}}</p><p>B: {{.B}}</p>`
 	t := template.Must(template.New("escape").Parse(templ))

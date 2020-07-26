@@ -3,7 +3,8 @@
 在本章，我们会学到另一个标准的接口类型flag.Value是怎么帮助命令行标记定义新的符号的。思考下面这个会休眠特定时间的程序：
 
 <u><i>gopl.io/ch7/sleep</i></u>
-```go
+
+```golang
 var period = flag.Duration("period", 1*time.Second, "sleep period")
 
 func main() {
@@ -52,7 +53,8 @@ String方法格式化标记的值用在命令行帮助消息中；这样每一�
 让我们定义一个允许通过摄氏度或者华氏温度变换的形式指定温度的celsiusFlag类型。注意celsiusFlag内嵌了一个Celsius类型（§2.5），因此不用实现本身就已经有String方法了。为了实现flag.Value，我们只需要定义Set方法：
 
 <u><i>gopl.io/ch7/tempconv</i></u>
-```go
+
+```golang
 // *celsiusFlag satisfies the flag.Value interface.
 type celsiusFlag struct{ Celsius }
 
@@ -90,7 +92,8 @@ func CelsiusFlag(name string, value Celsius, usage string) *Celsius {
 现在我们可以开始在我们的程序中使用新的标记：
 
 <u><i>gopl.io/ch7/tempflag</i></u>
-```go
+
+```golang
 var temp = tempconv.CelsiusFlag("temp", 20.0, "the temperature")
 
 func main() {

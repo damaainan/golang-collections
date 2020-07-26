@@ -5,7 +5,8 @@
 这里显示的是和这个API相关的部分：
 
 <u><i>encoding/xml</i></u>
-```go
+
+```golang
 package xml
 
 type Name struct {
@@ -38,7 +39,8 @@ func (*Decoder) Token() (Token, error) // returns next Token in sequence
 下面的xmlselect程序获取和打印在一个XML文档树中确定的元素下找到的文本。使用上面的API，它可以在输入上一次完成它的工作而从来不要实例化这个文档树。
 
 <u><i>gopl.io/ch7/xmlselect</i></u>
-```go
+
+```golang
 // Xmlselect prints the text of selected elements of an XML document.
 package main
 

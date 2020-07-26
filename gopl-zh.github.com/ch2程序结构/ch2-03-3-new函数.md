@@ -2,7 +2,7 @@
 
 另一个创建变量的方法是调用内建的new函数。表达式new(T)将创建一个T类型的匿名变量，初始化为T类型的零值，然后返回变量地址，返回的指针类型为`*T`。
 
-```Go
+```golang
 p := new(int)   // p, *int 类型, 指向匿名的 int 变量
 fmt.Println(*p) // "0"
 *p = 2          // 设置 int 匿名变量的值为 2
@@ -13,7 +13,7 @@ fmt.Println(*p) // "2"
 
 下面的两个newInt函数有着相同的行为：
 
-```Go
+```golang
 func newInt() *int {
 	return new(int)
 }
@@ -26,7 +26,7 @@ func newInt() *int {
 
 每次调用new函数都是返回一个新的变量的地址，因此下面两个地址是不同的：
 
-```Go
+```golang
 p := new(int)
 q := new(int)
 fmt.Println(p == q) // "false"
@@ -38,7 +38,7 @@ new函数使用通常相对比较少，因为对于结构体来说，直接用�
 
 由于new只是一个预定义的函数，它并不是一个关键字，因此我们可以将new名字重新定义为别的类型。例如下面的例子：
 
-```Go
+```golang
 func delta(old, new int) int { return new - old }
 ```
 

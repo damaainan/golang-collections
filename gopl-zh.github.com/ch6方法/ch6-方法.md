@@ -6,14 +6,14 @@
 
 在早些的章节中，我们已经使用了标准库提供的一些方法，比如time.Duration这个类型的Seconds方法：
 
-```Go
+```golang
 const day = 24 * time.Hour
 fmt.Println(day.Seconds()) // "86400"
 ```
 
 并且在2.5节中，我们定义了一个自己的方法，Celsius类型的String方法:
 
-```Go
+```golang
 func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }
 ```
 

@@ -10,7 +10,7 @@ unicode包提供了IsDigit、IsLetter、IsUpper和IsLower等类似功能，它�
 
 下面例子的basename函数灵感源于Unix shell的同名工具。在我们实现的版本中，basename(s)将看起来像是系统路径的前缀删除，同时将看似文件类型的后缀名部分删除：
 
-```Go
+```golang
 fmt.Println(basename("a/b/c.go")) // "c"
 fmt.Println(basename("c.d.go"))   // "c.d"
 fmt.Println(basename("abc"))      // "abc"
@@ -19,7 +19,8 @@ fmt.Println(basename("abc"))      // "abc"
 第一个版本并没有使用任何库，全部手工硬编码实现：
 
 <u><i>gopl.io/ch3/basename1</i></u>
-```Go
+
+```golang
 // basename removes directory components and a .suffix.
 // e.g., a => a, a.go => a, a/b/c.go => c, a/b.c.go => b.c
 func basename(s string) string {
@@ -44,7 +45,8 @@ func basename(s string) string {
 这个简化版本使用了strings.LastIndex库函数：
 
 <u><i>gopl.io/ch3/basename2</i></u>
-```Go
+
+```golang
 func basename(s string) string {
 	slash := strings.LastIndex(s, "/") // -1 if "/" not found
 	s = s[slash+1:]
@@ -60,7 +62,8 @@ path和path/filepath包提供了关于文件路径名更一般的函数操作。
 让我们继续另一个字符串的例子。函数的功能是将一个表示整数值的字符串，每隔三个字符插入一个逗号分隔符，例如“12345”处理后成为“12,345”。这个版本只适用于整数类型；支持浮点数类型的留作练习。
 
 <u><i>gopl.io/ch3/comma</i></u>
-```Go
+
+```golang
 // comma inserts commas in a non-negative decimal integer string.
 func comma(s string) string {
 	n := len(s)
@@ -77,7 +80,7 @@ func comma(s string) string {
 
 字符串和字节slice之间可以相互转换：
 
-```Go
+```golang
 s := "abc"
 b := []byte(s)
 s2 := string(b)
@@ -87,7 +90,7 @@ s2 := string(b)
 
 为了避免转换中不必要的内存分配，bytes包和strings同时提供了许多实用函数。下面是strings包中的六个函数：
 
-```Go
+```golang
 func Contains(s, substr string) bool
 func Count(s, sep string) int
 func Fields(s string) []string
@@ -98,7 +101,7 @@ func Join(a []string, sep string) string
 
 bytes包中也对应的六个函数：
 
-```Go
+```golang
 func Contains(b, subslice []byte) bool
 func Count(s, sep []byte) int
 func Fields(s []byte) [][]byte
@@ -112,7 +115,8 @@ func Join(s [][]byte, sep []byte) []byte
 bytes包还提供了Buffer类型用于字节slice的缓存。一个Buffer开始是空的，但是随着string、byte或[]byte等类型数据的写入可以动态增长，一个bytes.Buffer变量并不需要初始化，因为零值也是有效的：
 
 <u><i>gopl.io/ch3/printints</i></u>
-```Go
+
+```golang
 // intsToString is like fmt.Sprint(values) but adds commas.
 func intsToString(values []int) string {
 	var buf bytes.Buffer

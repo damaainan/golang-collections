@@ -3,7 +3,8 @@
 在第一章中，我们粗略的了解了怎么用net/http包去实现网络客户端（§1.5）和服务器（§1.7）。在这个小节中，我们会对那些基于http.Handler接口的服务器API做更进一步的学习：
 
 <u><i>net/http</i></u>
-```go
+
+```golang
 package http
 
 type Handler interface {
@@ -18,7 +19,8 @@ ListenAndServe函数需要一个例如“localhost:8000”的服务器地址，�
 想象一个电子商务网站，为了销售，将数据库中物品的价格映射成美元。下面这个程序可能是能想到的最简单的实现了。它将库存清单模型化为一个命名为database的map类型，我们给这个类型一个ServeHttp方法，这样它可以满足http.Handler接口。这个handler会遍历整个map并输出物品信息。
 
 <u><i>gopl.io/ch7/http1</i></u>
-```go
+
+```golang
 func main() {
 	db := database{"shoes": 50, "socks": 5}
 	log.Fatal(http.ListenAndServe("localhost:8000", db))
@@ -56,7 +58,8 @@ socks: $5.00
 目前为止，这个服务器不考虑URL，只能为每个请求列出它全部的库存清单。更真实的服务器会定义多个不同的URL，每一个都会触发一个不同的行为。让我们使用/list来调用已经存在的这个行为并且增加另一个/price调用表明单个货品的价格，像这样/price?item=socks来指定一个请求参数。
 
 <u><i>gopl.io/ch7/http2</i></u>
-```go
+
+```golang
 func (db database) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	switch req.URL.Path {
 	case "/list":
@@ -115,7 +118,8 @@ no such page: /help
 在下面的程序中，我们创建一个ServeMux并且使用它将URL和相应处理/list和/price操作的handler联系起来，这些操作逻辑都已经被分到不同的方法中。然后我们在调用ListenAndServe函数中使用ServeMux为主要的handler。
 
 <u><i>gopl.io/ch7/http3</i></u>
-```go
+
+```golang
 func main() {
 	db := database{"shoes": 50, "socks": 5}
 	mux := http.NewServeMux()
@@ -155,7 +159,8 @@ func(w http.ResponseWriter, req *http.Request)
 语句http.HandlerFunc(db.list)是一个转换而非一个函数调用，因为http.HandlerFunc是一个类型。它有如下的定义：
 
 <u><i>net/http</i></u>
-```go
+
+```golang
 package http
 
 type HandlerFunc func(w ResponseWriter, r *Request)
@@ -170,7 +175,8 @@ HandlerFunc显示了在Go语言接口机制中一些不同寻常的特点。这�
 因为handler通过这种方式注册非常普遍，ServeMux有一个方便的HandleFunc方法，它帮我们简化handler注册代码成这样：
 
 <u><i>gopl.io/ch7/http3a</i></u>
-```go
+
+```golang
 mux.HandleFunc("/list", db.list)
 mux.HandleFunc("/price", db.price)
 ```
@@ -182,7 +188,8 @@ mux.HandleFunc("/price", db.price)
 然后服务器的主函数可以简化成：
 
 <u><i>gopl.io/ch7/http4</i></u>
-```go
+
+```golang
 func main() {
 	db := database{"shoes": 50, "socks": 5}
 	http.HandleFunc("/list", db.list)

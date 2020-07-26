@@ -11,7 +11,8 @@
 这段代码里我们用了一些新的结构，包括const声明，struct结构体类型，复合声明。和我们举的其它的例子不太一样，这一个例子包含了浮点数运算。这些概念我们只在这里简单地说明一下，之后的章节会更详细地讲解。
 
 <u><i>gopl.io/ch1/lissajous</i></u>
-```go
+
+```golang
 // Lissajous generates GIF animations of random Lissajous figures.
 package main
 

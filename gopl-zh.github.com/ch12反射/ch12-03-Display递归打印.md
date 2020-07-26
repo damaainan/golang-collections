@@ -2,14 +2,14 @@
 
 接下来，让我们看看如何改善聚合数据类型的显示。我们并不想完全克隆一个fmt.Sprint函数，我们只是构建一个用于调试用的Display函数：给定任意一个复杂类型 x，打印这个值对应的完整结构，同时标记每个元素的发现路径。让我们从一个例子开始。
 
-```Go
+```golang
 e, _ := eval.Parse("sqrt(A / pi)")
 Display("e", e)
 ```
 
 在上面的调用中，传入Display函数的参数是在7.9节一个表达式求值函数返回的语法树。Display函数的输出如下：
 
-```Go
+```golang
 Display e (eval.call):
 e.fn = "sqrt"
 e.args[0].type = eval.binary
@@ -23,7 +23,8 @@ e.args[0].value.y.value = "pi"
 你应该尽量避免在一个包的API中暴露涉及反射的接口。我们将定义一个未导出的display函数用于递归处理工作，导出的是Display函数，它只是display函数简单的包装以接受interface{}类型的参数：
 
 <u><i>gopl.io/ch12/display</i></u>
-```Go
+
+```golang
 func Display(name string, x interface{}) {
 	fmt.Printf("Display %s (%T):\n", name, x)
 	display(name, reflect.ValueOf(x))
@@ -34,7 +35,7 @@ func Display(name string, x interface{}) {
 
 因为我们不再模拟fmt.Sprint函数，我们将直接使用fmt包来简化我们的例子实现。
 
-```Go
+```golang
 func display(path string, v reflect.Value) {
 	switch v.Kind() {
 	case reflect.Invalid:
@@ -88,7 +89,7 @@ func display(path string, v reflect.Value) {
 
 现在我们的Display函数总算完工了，让我们看看它的表现吧。下面的Movie类型是在4.5节的电影类型上演变来的：
 
-```Go
+```golang
 type Movie struct {
 	Title, Subtitle string
 	Year            int
@@ -101,7 +102,7 @@ type Movie struct {
 
 让我们声明一个该类型的变量，然后看看Display函数如何显示它：
 
-```Go
+```golang
 strangelove := Movie{
 	Title:    "Dr. Strangelove",
 	Subtitle: "How I Learned to Stop Worrying and Love the Bomb",
@@ -127,7 +128,7 @@ strangelove := Movie{
 
 Display("strangelove", strangelove)调用将显示（strangelove电影对应的中文名是《奇爱博士》）：
 
-```Go
+```golang
 Display strangelove (display.Movie):
 strangelove.Title = "Dr. Strangelove"
 strangelove.Subtitle = "How I Learned to Stop Worrying and Love the Bomb"
@@ -148,7 +149,7 @@ strangelove.Sequel = nil
 
 我们也可以使用Display函数来显示标准库中类型的内部结构，例如`*os.File`类型：
 
-```Go
+```golang
 Display("os.Stderr", os.Stderr)
 // Output:
 // Display os.Stderr (*os.File):
@@ -159,7 +160,7 @@ Display("os.Stderr", os.Stderr)
 
 可以看出，反射能够访问到结构体中未导出的成员。需要当心的是这个例子的输出在不同操作系统上可能是不同的，并且随着标准库的发展也可能导致结果不同。（这也是将这些成员定义为私有成员的原因之一！）我们甚至可以用Display函数来显示reflect.Value 的内部构造（在这里设置为`*os.File`的类型描述体）。`Display("rV", reflect.ValueOf(os.Stderr))`调用的输出如下，当然不同环境得到的结果可能有差异：
 
-```Go
+```golang
 Display rV (reflect.Value):
 (*rV.typ).size = 8
 (*rV.typ).hash = 871609668
@@ -176,7 +177,7 @@ Display rV (reflect.Value):
 
 观察下面两个例子的区别：
 
-```Go
+```golang
 var i interface{} = 3
 
 Display("i", i)
@@ -197,7 +198,7 @@ Display("&i", &i)
 
 对于目前的实现，如果遇到对象图中含有回环，Display将会陷入死循环，例如下面这个首尾相连的链表：
 
-```Go
+```golang
 // a struct that points to itself
 type Cycle struct{ Value int; Tail *Cycle }
 var c Cycle
@@ -207,7 +208,7 @@ Display("c", c)
 
 Display会永远不停地进行深度递归打印：
 
-```Go
+```golang
 Display c (display.Cycle):
 c.Value = 42
 (*c.Tail).Value = 42

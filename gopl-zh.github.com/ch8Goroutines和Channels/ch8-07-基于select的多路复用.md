@@ -3,7 +3,8 @@
 下面的程序会进行火箭发射的倒计时。time.Tick函数返回一个channel，程序会周期性地像一个节拍器一样向这个channel发送事件。每一个事件的值是一个时间戳，不过更有意思的是其传送方式。
 
 <u><i>gopl.io/ch8/countdown1</i></u>
-```go
+
+```golang
 func main() {
 	fmt.Println("Commencing countdown.")
 	tick := time.Tick(1 * time.Second)
@@ -18,7 +19,8 @@ func main() {
 现在我们让这个程序支持在倒计时中，用户按下return键时直接中断发射流程。首先，我们启动一个goroutine，这个goroutine会尝试从标准输入中读入一个单独的byte并且，如果成功了，会向名为abort的channel发送一个值。
 
 <u><i>gopl.io/ch8/countdown2</i></u>
-```go
+
+```golang
 abort := make(chan struct{})
 go func() {
 	os.Stdin.Read(make([]byte, 1)) // read a single byte
@@ -82,7 +84,8 @@ for i := 0; i < 10; i++ {
 下面让我们的发射程序打印倒计时。这里的select语句会使每次循环迭代等待一秒来执行退出操作。
 
 <u><i>gopl.io/ch8/countdown3</i></u>
-```go
+
+```golang
 func main() {
 	// ...create abort channel...
 

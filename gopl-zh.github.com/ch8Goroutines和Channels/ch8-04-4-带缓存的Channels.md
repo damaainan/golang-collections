@@ -2,7 +2,7 @@
 
 带缓存的Channel内部持有一个元素队列。队列的最大容量是在调用make函数创建channel时通过第二个参数指定的。下面的语句创建了一个可以持有三个字符串元素的带缓存Channel。图8.2是ch变量对应的channel的图形表示形式。
 
-```Go
+```golang
 ch = make(chan string, 3)
 ```
 
@@ -12,7 +12,7 @@ ch = make(chan string, 3)
 
 我们可以在无阻塞的情况下连续向新创建的channel发送三个值：
 
-```Go
+```golang
 ch <- "A"
 ch <- "B"
 ch <- "C"
@@ -24,7 +24,7 @@ ch <- "C"
 
 如果我们接收一个值，
 
-```Go
+```golang
 fmt.Println(<-ch) // "A"
 ```
 
@@ -34,19 +34,19 @@ fmt.Println(<-ch) // "A"
 
 在某些特殊情况下，程序可能需要知道channel内部缓存的容量，可以用内置的cap函数获取：
 
-```Go
+```golang
 fmt.Println(cap(ch)) // "3"
 ```
 
 同样，对于内置的len函数，如果传入的是channel，那么将返回channel内部缓存队列中有效元素的个数。因为在并发程序中该信息会随着接收操作而失效，但是它对某些故障诊断和性能优化会有帮助。
 
-```Go
+```golang
 fmt.Println(len(ch)) // "2"
 ```
 
 在继续执行两次接收操作后channel内部的缓存队列将又成为空的，如果有第四个接收操作将发生阻塞：
 
-```Go
+```golang
 fmt.Println(<-ch) // "B"
 fmt.Println(<-ch) // "C"
 ```
@@ -55,7 +55,7 @@ fmt.Println(<-ch) // "C"
 
 下面的例子展示了一个使用了带缓存channel的应用。它并发地向三个镜像站点发出请求，三个镜像站点分散在不同的地理位置。它们分别将收到的响应发送到带缓存channel，最后接收者只接收第一个收到的响应，也就是最快的那个响应。因此mirroredQuery函数可能在另外两个响应慢的镜像站点响应之前就返回了结果。（顺便说一下，多个goroutines并发地向同一个channel发送数据，或从同一个channel接收数据都是常见的用法。）
 
-```Go
+```golang
 func mirroredQuery() string {
 	responses := make(chan string, 3)
 	go func() { responses <- request("asia.gopl.io") }()

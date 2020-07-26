@@ -42,7 +42,8 @@ sort.Sort(StringSlice(names))
 下面的变量tracks包含了一个播放列表。（One of the authors apologizes for the other author’s musical tastes.）每个元素都不是Track本身而是指向它的指针。尽管我们在下面的代码中直接存储Tracks也可以工作，sort函数会交换很多对元素，所以如果每个元素都是指针而不是Track类型会更快，指针是一个机器字码长度而Track类型可能是八个或更多。
 
 <u><i>gopl.io/ch7/sorting</i></u>
-```go
+
+```golang
 type Track struct {
 	Title  string
 	Artist string

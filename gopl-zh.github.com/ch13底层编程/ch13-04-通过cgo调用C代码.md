@@ -6,7 +6,7 @@ Go程序可能会遇到要访问C语言的某些硬件驱动函数的场景，�
 
 在标准库的`compress/...`子包有很多流行的压缩算法的编码和解码实现，包括流行的LZW压缩算法（Unix的compress命令用的算法）和DEFLATE压缩算法（GNU gzip命令用的算法）。这些包的API的细节虽然有些差异，但是它们都提供了针对 io.Writer类型输出的压缩接口和提供了针对io.Reader类型输入的解压缩接口。例如：
 
-```Go
+```golang
 package gzip // compress/gzip
 func NewWriter(w io.Writer) io.WriteCloser
 func NewReader(r io.Reader) (io.ReadCloser, error)
@@ -18,7 +18,7 @@ bzip2压缩算法，是基于优雅的Burrows-Wheeler变换算法，运行速度
 
 译注：本章采用的代码都是最新的。因为之前已经出版的书中包含的代码只能在Go1.5之前使用。从Go1.6开始，Go语言已经明确规定了哪些Go语言指针可以直接传入C语言函数。新代码重点是增加了bz2alloc和bz2free的两个函数，用于bz_stream对象空间的申请和释放操作。下面是新代码中增加的注释，说明这个问题：
 
-```Go
+```golang
 // The version of this program that appeared in the first and second
 // printings did not comply with the proposed rules for passing
 // pointers between Go and C, described here:
@@ -63,7 +63,7 @@ int bz2compress(bz_stream *s, int action,
 
 现在让我们转到Go语言部分，第一部分如下所示。其中`import "C"`的语句是比较特别的。其实并没有一个叫C的包，但是这行语句会让Go编译程序在编译之前先运行cgo工具。
 
-```Go
+```golang
 // Package bzip provides a writer that uses bzip2 compression (bzip.org).
 package bzip
 
@@ -109,7 +109,7 @@ NewWriter函数通过调用C语言的BZ2_bzCompressInit函数来初始化stream�
 
 下面是Write方法的实现，返回成功压缩数据的大小，主体是一个循环中调用C语言的bz2compress函数实现的。从代码可以看到，Go程序可以访问C语言的bz_stream、char和uint类型，还可以访问bz2compress等函数，甚至可以访问C语言中像BZ_RUN那样的宏定义，全部都是以C.x语法访问。其中C.uint类型和Go语言的uint类型并不相同，即使它们具有相同的大小也是不同的类型。
 
-```Go
+```golang
 func (w *writer) Write(data []byte) (int, error) {
 	if w.stream == nil {
 		panic("closed")
@@ -135,7 +135,7 @@ func (w *writer) Write(data []byte) (int, error) {
 
 Close方法和Write方法有着类似的结构，通过一个循环将剩余的压缩数据刷新到输出缓存。
 
-```Go
+```golang
 // Close flushes the compressed data and closes the stream.
 // It does not close the underlying io.Writer.
 func (w *writer) Close() error {
@@ -168,7 +168,8 @@ func (w *writer) Close() error {
 下面的bzipper程序，使用我们自己包实现的bzip2压缩命令。它的行为和许多Unix系统的bzip2命令类似。
 
 <u><i>gopl.io/ch13/bzipper</i></u>
-```Go
+
+```golang
 // Bzipper reads input, bzip2-compresses it, and writes it out.
 package main
 

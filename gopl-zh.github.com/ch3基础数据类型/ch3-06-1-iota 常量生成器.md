@@ -4,7 +4,7 @@
 
 下面是来自time包的例子，它首先定义了一个Weekday命名类型，然后为一周的每天定义了一个常量，从周日0开始。在其它编程语言中，这种类型一般被称为枚举类型。
 
-```Go
+```golang
 type Weekday int
 
 const (
@@ -22,7 +22,7 @@ const (
 
 我们也可以在复杂的常量表达式中使用iota，下面是来自net包的例子，用于给一个无符号整数的最低5bit的每个bit指定一个名字：
 
-```Go
+```golang
 type Flags uint
 
 const (
@@ -37,7 +37,8 @@ const (
 随着iota的递增，每个常量对应表达式1 << iota，是连续的2的幂，分别对应一个bit位置。使用这些常量可以用于测试、设置或清除对应的bit位的值：
 
 <u><i>gopl.io/ch3/netflag</i></u>
-```Go
+
+```golang
 func IsUp(v Flags) bool     { return v&FlagUp == FlagUp }
 func TurnDown(v *Flags)     { *v &^= FlagUp }
 func SetBroadcast(v *Flags) { *v |= FlagBroadcast }
@@ -56,7 +57,7 @@ func main() {
 
 下面是一个更复杂的例子，每个常量都是1024的幂：
 
-```Go
+```golang
 const (
 	_ = 1 << (10 * iota)
 	KiB // 1024

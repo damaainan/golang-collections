@@ -2,7 +2,7 @@
 
 随着程序的增长，人们习惯于将大的函数拆分为小的函数。我们前面的例子中使用了三个goroutine，然后用两个channels来连接它们，它们都是main函数的局部变量。将三个goroutine拆分为以下三个函数是自然的想法：
 
-```Go
+```golang
 func counter(out chan int)
 func squarer(out, in chan int)
 func printer(in chan int)
@@ -19,7 +19,8 @@ func printer(in chan int)
 这是改进的版本，这一次参数使用了单方向channel类型：
 
 <u><i>gopl.io/ch8/pipeline3</i></u>
-```Go
+
+```golang
 func counter(out chan<- int) {
 	for x := 0; x < 100; x++ {
 		out <- x

@@ -4,7 +4,7 @@
 
 一个普通的`*T`类型指针可以被转化为unsafe.Pointer类型指针，并且一个unsafe.Pointer类型指针也可以被转回普通的指针，被转回普通的指针类型并不需要和原始的`*T`类型相同。通过将`*float64`类型指针转化为`*uint64`类型指针，我们可以查看一个浮点数变量的位模式。
 
-```Go
+```golang
 package math
 
 func Float64bits(f float64) uint64 { return *(*uint64)(unsafe.Pointer(&f)) }
@@ -19,7 +19,8 @@ fmt.Printf("%#016x\n", Float64bits(1.0)) // "0x3ff0000000000000"
 许多将unsafe.Pointer指针转为原生数字，然后再转回为unsafe.Pointer类型指针的操作也是不安全的。比如下面的例子需要将变量x的地址加上b字段地址偏移量转化为`*int16`类型指针，然后通过该指针更新x.b：
 
 <u><i>gopl.io/ch13/unsafeptr</i></u>
-```Go
+
+```golang
 var x struct {
 	a bool
 	b int16
@@ -35,7 +36,7 @@ fmt.Println(x.b) // "42"
 
 上面的写法尽管很繁琐，但在这里并不是一件坏事，因为这些功能应该很谨慎地使用。不要试图引入一个uintptr类型的临时变量，因为它可能会破坏代码的安全性（译注：这是真正可以体会unsafe包为何不安全的例子）。下面段代码是错误的：
 
-```Go
+```golang
 // NOTE: subtly incorrect!
 tmp := uintptr(unsafe.Pointer(&x)) + unsafe.Offsetof(x.b)
 pb := (*int16)(unsafe.Pointer(tmp))
@@ -46,7 +47,7 @@ pb := (*int16)(unsafe.Pointer(tmp))
 
 还有很多类似原因导致的错误。例如这条语句：
 
-```Go
+```golang
 pT := uintptr(unsafe.Pointer(new(T))) // 提示: 错误!
 ```
 
@@ -58,7 +59,7 @@ pT := uintptr(unsafe.Pointer(new(T))) // 提示: 错误!
 
 当调用一个库函数，并且返回的是uintptr类型地址时（译注：普通方法实现的函数尽量不要返回该类型。下面例子是reflect包的函数，reflect包和unsafe包一样都是采用特殊技术实现的，编译器可能给它们开了后门），比如下面反射包中的相关函数，返回的结果应该立即转换为unsafe.Pointer以确保指针指向的是相同的变量。
 
-```Go
+```golang
 package reflect
 
 func (Value) Pointer() uintptr

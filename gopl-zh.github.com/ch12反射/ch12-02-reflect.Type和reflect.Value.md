@@ -4,7 +4,7 @@
 
 函数 reflect.TypeOf 接受任意的 interface{} 类型，并以 reflect.Type 形式返回其动态类型：
 
-```Go
+```golang
 t := reflect.TypeOf(3)  // a reflect.Type
 fmt.Println(t.String()) // "int"
 fmt.Println(t)          // "int"
@@ -14,20 +14,20 @@ fmt.Println(t)          // "int"
 
 因为 reflect.TypeOf 返回的是一个动态类型的接口值，它总是返回具体的类型。因此，下面的代码将打印 "*os.File" 而不是 "io.Writer"。稍后，我们将看到能够表达接口类型的 reflect.Type。
 
-```Go
+```golang
 var w io.Writer = os.Stdout
 fmt.Println(reflect.TypeOf(w)) // "*os.File"
 ```
 
 要注意的是 reflect.Type 接口是满足 fmt.Stringer 接口的。因为打印一个接口的动态类型对于调试和日志是有帮助的， fmt.Printf 提供了一个缩写 %T 参数，内部使用 reflect.TypeOf 来输出：
 
-```Go
+```golang
 fmt.Printf("%T\n", 3) // "int"
 ```
 
 reflect 包中另一个重要的类型是 Value。一个 reflect.Value 可以装载任意类型的值。函数 reflect.ValueOf 接受任意的 interface{} 类型，并返回一个装载着其动态值的 reflect.Value。和 reflect.TypeOf 类似，reflect.ValueOf 返回的结果也是具体的类型，但是 reflect.Value 也可以持有一个接口值。
 
-```Go
+```golang
 v := reflect.ValueOf(3) // a reflect.Value
 fmt.Println(v)          // "3"
 fmt.Printf("%v\n", v)   // "3"
@@ -38,14 +38,14 @@ fmt.Println(v.String()) // NOTE: "<int Value>"
 
 对 Value 调用 Type 方法将返回具体类型所对应的 reflect.Type：
 
-```Go
+```golang
 t := v.Type()           // a reflect.Type
 fmt.Println(t.String()) // "int"
 ```
 
 reflect.ValueOf 的逆操作是 reflect.Value.Interface 方法。它返回一个 interface{} 类型，装载着与 reflect.Value 相同的具体值：
 
-```Go
+```golang
 v := reflect.ValueOf(3) // a reflect.Value
 x := v.Interface()      // an interface{}
 i := x.(int)            // an int
@@ -57,7 +57,8 @@ reflect.Value 和 interface{} 都能装载任意的值。所不同的是，一�
 我们使用 reflect.Value 的 Kind 方法来替代之前的类型 switch。虽然还是有无穷多的类型，但是它们的 kinds 类型却是有限的：Bool、String 和 所有数字类型的基础类型；Array 和 Struct 对应的聚合类型；Chan、Func、Ptr、Slice 和 Map 对应的引用类型；interface 类型；还有表示空值的 Invalid 类型。（空的 reflect.Value 的 kind 即为 Invalid。）
 
 <u><i>gopl.io/ch12/format</i></u>
-```Go
+
+```golang
 package format
 
 import (
@@ -97,7 +98,7 @@ func formatAtom(v reflect.Value) string {
 
 到目前为止，我们的函数将每个值视作一个不可分割没有内部结构的物品，因此它叫 formatAtom。对于聚合类型（结构体和数组）和接口，只是打印值的类型，对于引用类型（channels、functions、pointers、slices 和 maps），打印类型和十六进制的引用地址。虽然还不够理想，但是依然是一个重大的进步，并且 Kind 只关心底层表示，format.Any 也支持具名类型。例如：
 
-```Go
+```golang
 var x int64 = 1
 var d time.Duration = 1 * time.Nanosecond
 fmt.Println(format.Any(x))                  // "1"

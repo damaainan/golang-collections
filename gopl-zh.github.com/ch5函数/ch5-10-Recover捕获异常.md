@@ -6,7 +6,7 @@
 
 让我们以语言解析器为例，说明recover的使用场景。考虑到语言解析器的复杂性，即使某个语言解析器目前工作正常，也无法肯定它没有漏洞。因此，当某个异常出现时，我们不会选择让解析器崩溃，而是会将panic异常当作普通的解析错误，并附加额外信息提醒用户报告此错误。
 
-```Go
+```golang
 func Parse(input string) (s *Syntax, err error) {
 	defer func() {
 		if p := recover(); p != nil {
@@ -29,7 +29,7 @@ deferred函数帮助Parse从panic中恢复。在deferred函数内部，panic val
 
 下面的例子是title函数的变形，如果HTML页面包含多个`<title>`，该函数会给调用者返回一个错误（error）。在soleTitle内部处理时，如果检测到有多个`<title>`，会调用panic，阻止函数继续递归，并将特殊类型bailout作为panic的参数。
 
-```Go
+```golang
 // soleTitle returns the text of the first non-empty title element
 // in doc, and an error if there was not exactly one.
 func soleTitle(doc *html.Node) (title string, err error) {

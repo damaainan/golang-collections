@@ -11,7 +11,8 @@
 在8.3节的客户端程序，它在主goroutine中（译注：就是执行main函数的goroutine）将标准输入复制到server，因此当客户端程序关闭标准输入时，后台goroutine可能依然在工作。我们需要让主goroutine等待后台goroutine完成工作后再退出，我们使用了一个channel来同步两个goroutine：
 
 <u><i>gopl.io/ch8/netcat3</i></u>
-```Go
+
+```golang
 func main() {
 	conn, err := net.Dial("tcp", "localhost:8000")
 	if err != nil {

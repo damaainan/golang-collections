@@ -12,7 +12,8 @@ func handleConn(c net.Conn) {
 一个更有意思的echo服务应该模拟一个实际的echo的“回响”，并且一开始要用大写HELLO来表示“声音很大”，之后经过一小段延迟返回一个有所缓和的Hello，然后一个全小写字母的hello表示声音渐渐变小直至消失，像下面这个版本的handleConn(译注：笑看作者脑洞大开)：
 
 <u><i>gopl.io/ch8/reverb1</i></u>
-```go
+
+```golang
 func echo(c net.Conn, shout string, delay time.Duration) {
 	fmt.Fprintln(c, "\t", strings.ToUpper(shout))
 	time.Sleep(delay)
@@ -34,7 +35,8 @@ func handleConn(c net.Conn) {
 我们需要升级我们的客户端程序，这样它就可以发送终端的输入到服务器，并把服务端的返回输出到终端上，这使我们有了使用并发的另一个好机会：
 
 <u><i>gopl.io/ch8/netcat2</i></u>
-```go
+
+```golang
 func main() {
 	conn, err := net.Dial("tcp", "localhost:8000")
 	if err != nil {
@@ -75,7 +77,8 @@ $ killall reverb1
 注意客户端的第三次shout在前一个shout处理完成之前一直没有被处理，这貌似看起来不是特别“现实”。真实世界里的回响应该是会由三次shout的回声组合而成的。为了模拟真实世界的回响，我们需要更多的goroutine来做这件事情。这样我们就再一次地需要go这个关键词了，这次我们用它来调用echo：
 
 <u><i>gopl.io/ch8/reverb2</i></u>
-```go
+
+```golang
 func handleConn(c net.Conn) {
 	input := bufio.NewScanner(c)
 	for input.Scan() {

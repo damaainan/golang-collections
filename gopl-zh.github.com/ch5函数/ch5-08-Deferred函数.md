@@ -5,7 +5,8 @@
 下面的例子获取HTML页面并输出页面的标题。title函数会检查服务器返回的Content-Type字段，如果发现页面不是HTML，将终止函数运行，返回错误。
 
 <u><i>gopl.io/ch5/title1</i></u>
-```Go
+
+```golang
 func title(url string) error {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -51,7 +52,8 @@ resp.Body.close调用了多次，这是为了确保title在所有执行路径下
 defer语句经常被用于处理成对的操作，如打开、关闭、连接、断开连接、加锁、释放锁。通过defer机制，不论函数逻辑多复杂，都能保证在任何执行路径下，资源被释放。释放资源的defer应该直接跟在请求资源的语句后。在下面的代码中，一条defer语句替代了之前的所有resp.Body.Close
 
 <u><i>gopl.io/ch5/title2</i></u>
-```Go
+
+```golang
 func title(url string) error {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -74,7 +76,8 @@ func title(url string) error {
 在处理其他资源时，也可以采用defer机制，比如对文件的操作：
 
 <u><i>io/ioutil</i></u>
-```Go
+
+```golang
 package ioutil
 func ReadFile(filename string) ([]byte, error) {
 	f, err := os.Open(filename)
@@ -88,7 +91,7 @@ func ReadFile(filename string) ([]byte, error) {
 
 或是处理互斥锁（9.2章）
 
-```Go
+```golang
 var mu sync.Mutex
 var m = make(map[string]int)
 func lookup(key string) int {
@@ -101,7 +104,8 @@ func lookup(key string) int {
 调试复杂程序时，defer机制也常被用于记录何时进入和退出函数。下例中的bigSlowOperation函数，直接调用trace记录函数的被调情况。bigSlowOperation被调时，trace会返回一个函数值，该函数值会在bigSlowOperation退出时被调用。通过这种方式， 我们可以只通过一条语句控制函数的入口和所有的出口，甚至可以记录函数的运行时间，如例子中的start。需要注意一点：不要忘记defer语句后的圆括号，否则本该在进入时执行的操作会在退出时执行，而本该在退出时执行的，永远不会被执行。
 
 <u><i>gopl.io/ch5/trace</i></u>
-```Go
+
+```golang
 func bigSlowOperation() {
 	defer trace("bigSlowOperation")() // don't forget the extra parentheses
 	// ...lots of work…
@@ -129,7 +133,7 @@ $ ./trace
 
 以double函数为例：
 
-```Go
+```golang
 func double(x int) int {
 	return x + x
 }
@@ -137,7 +141,7 @@ func double(x int) int {
 
 我们只需要首先命名double的返回值，再增加defer语句，我们就可以在double每次被调用时，输出参数以及返回值。
 
-```Go
+```golang
 func double(x int) (result int) {
 	defer func() { fmt.Printf("double(%d) = %d\n", x,result) }()
 	return x + x
@@ -151,7 +155,7 @@ _ = double(4)
 
 被延迟执行的匿名函数甚至可以修改函数返回给调用者的返回值：
 
-```Go
+```golang
 func triple(x int) (result int) {
 	defer func() { result += x }()
 	return double(x)
@@ -161,7 +165,7 @@ fmt.Println(triple(4)) // "12"
 
 在循环体中的defer语句需要特别注意，因为只有在函数执行完毕后，这些被延迟的函数才会执行。下面的代码会导致系统的文件描述符耗尽，因为在所有文件都被处理之前，没有文件会被关闭。
 
-```Go
+```golang
 for _, filename := range filenames {
 	f, err := os.Open(filename)
 	if err != nil {
@@ -174,7 +178,7 @@ for _, filename := range filenames {
 
 一种解决方法是将循环体中的defer语句移至另外一个函数。在每次循环时，调用这个函数。
 
-```Go
+```golang
 for _, filename := range filenames {
 	if err := doFile(filename); err != nil {
 		return err
@@ -193,7 +197,8 @@ func doFile(filename string) error {
 下面的代码是fetch（1.5节）的改进版，我们将http响应信息写入本地文件而不是从标准输出流输出。我们通过path.Base提出url路径的最后一段作为文件名。
 
 <u><i>gopl.io/ch5/fetch</i></u>
-```Go
+
+```golang
 // Fetch downloads the URL and returns the
 // name and length of the local file.
 func fetch(url string) (filename string, n int64, err error) {

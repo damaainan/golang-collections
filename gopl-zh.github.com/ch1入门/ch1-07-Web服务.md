@@ -3,7 +3,8 @@
 Go语言的内置库使得写一个类似fetch的web服务器变得异常地简单。在本节中，我们会展示一个微型服务器，这个服务器的功能是返回当前用户正在访问的URL。比如用户访问的是 http://localhost:8000/hello ，那么响应是URL.Path = "hello"。
 
 <u><i>gopl.io/ch1/server1</i></u>
-```go
+
+```golang
 // Server1 is a minimal "echo" server.
 package main
 
@@ -49,7 +50,8 @@ URL.Path = "/help"
 在这个服务的基础上叠加特性是很容易的。一种比较实用的修改是为访问的url添加某种状态。比如，下面这个版本输出了同样的内容，但是会对请求的次数进行计算；对URL的请求结果会包含各种URL被访问的总次数，直接对/count这个URL的访问要除外。
 
 <u><i>gopl.io/ch1/server2</i></u>
-```go
+
+```golang
 // Server2 is a minimal "echo" and counter server.
 package main
 
@@ -90,7 +92,8 @@ func counter(w http.ResponseWriter, r *http.Request) {
 下面是一个更为丰富的例子，handler函数会把请求的http头和请求的form数据都打印出来，这样可以使检查和调试这个服务更为方便：
 
 <u><i>gopl.io/ch1/server3</i></u>
-```go
+
+```golang
 // handler echoes the HTTP request.
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s %s %s\n", r.Method, r.URL, r.Proto)
@@ -139,7 +142,7 @@ if err != nil {
 
 Go语言的接口机制会在第7章中讲解，为了在这里简单说明接口能做什么，让我们简单地将这里的web服务器和之前写的lissajous函数结合起来，这样GIF动画可以被写到HTTP的客户端，而不是之前的标准输出流。只要在web服务器的代码里加入下面这几行。
 
-```Go
+```golang
 handler := func(w http.ResponseWriter, r *http.Request) {
 	lissajous(w)
 }
@@ -148,7 +151,7 @@ http.HandleFunc("/", handler)
 
 或者另一种等价形式：
 
-```Go
+```golang
 http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 	lissajous(w)
 })

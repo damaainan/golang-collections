@@ -5,7 +5,8 @@ Go语言最有意思并且最新奇的特性就是对并发编程的支持。并
 下面的例子fetchall，和前面小节的fetch程序所要做的工作基本一致，fetchall的特别之处在于它会同时去获取所有的URL，所以这个程序的总执行时间不会超过执行时间最长的那一个任务，前面的fetch程序执行时间则是所有任务执行时间之和。fetchall程序只会打印获取的内容大小和经过的时间，不会像之前那样打印获取的内容。
 
 <u><i>gopl.io/ch1/fetchall</i></u>
-```go
+
+```golang
 // Fetchall fetches URLs in parallel and reports their times and sizes.
 package main
 
